@@ -1,0 +1,37 @@
+name: Build R2K GRAPHIC APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Extract Android project
+        run: |
+          unzip -o R2K_GRAPHIC_Android_Project_v2.zip
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: 8.7
+
+      - name: Build Android APK
+        run: |
+          gradle -p R2K_GRAPHIC_Android assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: R2K-GRAPHIC-APK
+          path: R2K_GRAPHIC_Android/app/build/outputs/apk/debug/app-debug.apk
